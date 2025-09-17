@@ -1,4 +1,4 @@
-package com.example.aiverse
+package com.FalAI.AIVerse
 
 import io.flutter.embedding.android.FlutterActivity
 

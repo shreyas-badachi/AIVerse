@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "327466349000",
+    "project_id": "aiverse-1ba3c",
+    "storage_bucket": "aiverse-1ba3c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327466349000:android:751ccf9b493da484a750fd",
+        "android_client_info": {
+          "package_name": "com.FalAI.AIVerse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBH5apUPev1I2Ctc5V80CjoqMBDn5hmrwk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
