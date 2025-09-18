@@ -50,7 +50,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: dotenv.env['ANDROID_FIREBASE'] ?? "",
+    apiKey: 'AIzaSyBH5apUPev1I2Ctc5V80CjoqMBDn5hmrwk',
     appId: '1:327466349000:android:751ccf9b493da484a750fd',
     messagingSenderId: '327466349000',
     projectId: 'aiverse-1ba3c',
@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: dotenv.env['IOS_FIREBASE'] ?? "",,
+    apiKey: 'AIzaSyCzKldzA8YBvbxzQcvez7fIXikD7N00gJ0',
     appId: '1:327466349000:ios:3609703b769b4490a750fd',
     messagingSenderId: '327466349000',
     projectId: 'aiverse-1ba3c',

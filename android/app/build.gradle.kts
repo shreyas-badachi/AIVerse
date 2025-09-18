@@ -7,13 +7,13 @@ plugins {
 
 android {
     namespace = "com.FalAI.AIVerse"
-    compileSdk = 34 // ensure latest SDK
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 36 // ensure latest SDK
+    ndkVersion = "27.0.12077973"
 
     defaultConfig {
         applicationId = "com.FalAI.AIVerse"
-        minSdk = 23 // ✅ Firebase requires >=21
-        targetSdk = 34
+        minSdk = flutter.minSdkVersion // ✅ Firebase requires >=21
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -35,6 +35,6 @@ android {
 }
 
 dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:34.4.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-auth-ktx")
 }

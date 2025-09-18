@@ -4,43 +4,52 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:fal_client/fal_client.dart';
 import 'package:cross_file/cross_file.dart';
+import 'package:html/parser.dart' as html_parser;
+
 
 class ApiService {
-  static final String hfToken = dotenv.env['HF_TOKEN'] ?? "";
-  static final String falApiKey = dotenv.env['FAL_KEY'] ?? "";
+  static final String hfToken = dotenv.env['HF_TOKEN'] ?? '';
+  static final String falApiKey = dotenv.env['FAL_KEY'] ?? '';
 
   // Hugging Face Models
-  static const String textModel = "deepseek-ai/DeepSeek-R1:fireworks-ai";
-  static const String imageModel = "stabilityai/stable-diffusion-xl-base-1.0";
-  static const String imageApiUrl = "https://api-inference.huggingface.co/models/$imageModel";
+  static const String textModel = 'deepseek-ai/DeepSeek-R1:fireworks-ai';
+  static const String imageModel = 'stabilityai/stable-diffusion-xl-base-1.0';
+  static const String imageApiUrl = 'https://api-inference.huggingface.co/models/$imageModel';
 
   // Fal.ai Models
-  static const String imageToImageModel = "fal-ai/flux-pro/kontext";
-  static const String textToVideoModel = "fal-ai/veo3";
+  static const String imageToImageModel = 'fal-ai/flux-pro/kontext';
+  static const String textToVideoModel = 'fal-ai/veo3';
 
   /// Generate text using DeepSeek
+
   static Future<String> generateText(String input) async {
     try {
       final response = await http.post(
-        Uri.parse("https://router.huggingface.co/v1/chat/completions"),
+        Uri.parse('https://router.huggingface.co/v1/chat/completions'),
         headers: {
-          "Authorization": "Bearer $hfToken",
-          "Content-Type": "application/json",
+          'Authorization': 'Bearer $hfToken',
+          'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          "model": textModel,
-          "messages": [{"role": "user", "content": input}]
+          'model': textModel,
+          'messages': [
+            {'role': 'user', 'content': input}
+          ]
         }),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return data["choices"][0]["message"]["content"] ?? "No content";
+        String raw = data['choices'][0]['message']['content'] ?? 'No content';
+
+        // 🧹 Remove HTML tags
+        final document = html_parser.parse(raw);
+        return document.body?.text.trim() ?? raw;
       } else {
-        return "Error: ${response.body}";
+        return 'Error: ${response.body}';
       }
     } catch (e) {
-      return "Exception: $e";
+      return 'Exception: $e';
     }
   }
 
@@ -50,11 +59,11 @@ class ApiService {
       final response = await http.post(
         Uri.parse(imageApiUrl),
         headers: {
-          "Authorization": "Bearer $hfToken",
-          "Content-Type": "application/json",
-          "Accept": "image/png",
+          'Authorization': 'Bearer $hfToken',
+          'Content-Type': 'application/json',
+          'Accept': 'image/png',
         },
-        body: jsonEncode({"inputs": prompt}),
+        body: jsonEncode({'inputs': prompt}),
       );
 
       if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
@@ -73,30 +82,30 @@ class ApiService {
       final fal = FalClient.withCredentials(falApiKey);
 
       // Step 1: Upload image
-      final file = XFile.fromData(inputImage, name: "input.png", mimeType: "image/png");
+      final file = XFile.fromData(inputImage, name: 'input.png', mimeType: 'image/png');
       final imageUrl = await fal.storage.upload(file);
 
       // Step 2: Call Kontext
       final output = await fal.subscribe(
         imageToImageModel,
         input: {
-          "prompt": prompt,
-          "image_url": imageUrl,
+          'prompt': prompt,
+          'image_url': imageUrl,
         },
         logs: true,
       );
 
       // Step 3: Get result
-      if (output.data != null && output.data["images"] != null && output.data["images"].isNotEmpty) {
-        final resultUrl = output.data["images"][0]["url"];
+      if (output.data['images'] != null && output.data['images'].isNotEmpty) {
+        final resultUrl = output.data['images'][0]['url'];
         final imageRes = await http.get(Uri.parse(resultUrl));
         return imageRes.bodyBytes;
       } else {
-        print("DEBUG: No image returned: ${output.data}");
+        print('DEBUG: No image returned: ${output.data}');
         return null;
       }
     } catch (e) {
-      print("DEBUG: Exception $e");
+      print('DEBUG: Exception $e');
       return null;
     }
   }
@@ -108,18 +117,18 @@ class ApiService {
 
       final output = await fal.subscribe(
         textToVideoModel,
-        input: {"prompt": prompt},
+        input: {'prompt': prompt},
         logs: true,
       );
 
-      if (output.data != null && output.data["videos"] != null && output.data["videos"].isNotEmpty) {
-        return output.data["videos"][0]["url"];
+      if (output.data['videos'] != null && output.data['videos'].isNotEmpty) {
+        return output.data['videos'][0]['url'];
       } else {
-        print("DEBUG: No video returned: ${output.data}");
+        print('DEBUG: No video returned: ${output.data}');
         return null;
       }
     } catch (e) {
-      print("DEBUG: Exception $e");
+      print('DEBUG: Exception $e');
       return null;
     }
   }

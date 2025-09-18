@@ -12,9 +12,9 @@ Future<void> main() async {
 
   // Load .env safely
   try {
-    await dotenv.load(fileName: ".env");
+    await dotenv.load(fileName: '.env');
   } catch (e) {
-    print("⚠️ .env file not found, continuing without it: $e");
+    print('⚠️ .env file not found, continuing without it: $e');
   }
 
   // Initialize Firebase
@@ -31,7 +31,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AIVerse Demo',
+      title: 'AIVerse',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
@@ -52,7 +53,7 @@ class AuthGate extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasData) {
-          return HomePage(); // Logged in
+          return const HomePage(); // Logged in
         }
         return const LoginPage(); // Not logged in
       },
